@@ -3,6 +3,9 @@
 ## Project Overview
 GitHub Repositories API is a **Quarkus-based** application that retrieves repositories for a specified GitHub user, filters out forks, and retrieves their branches. The API supports dynamic query parameters, allowing users to fetch specific types of repositories.
 
+## Endpoint Demo
+https://github.com/user-attachments/assets/8fcd4c94-5846-44f1-af63-87256b9a621f
+
 ## 🛠️ Technologies Used
 - **Java 17** – Modern, high-performance Java version.
 - **Quarkus** – Fast, cloud-native Java framework.
