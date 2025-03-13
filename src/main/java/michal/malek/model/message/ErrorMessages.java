@@ -2,6 +2,7 @@ package michal.malek.model.message;
 
 public class ErrorMessages {
     public static final String USER_NOT_FOUND = "User not found: %s.";
+    public static final String USER_HAS_NO_REPOSITORIES = "User '%s' has no repositories.";
     public static final String GITHUB_API_ERROR = "Error communicating with GitHub. Please try again later.";
     public static final String INVALID_INPUT = "Invalid input: %s";
     public static final String UNEXPECTED_ERROR = "An unexpected error occurred. Please try again later.";

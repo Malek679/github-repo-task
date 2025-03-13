@@ -5,6 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import michal.malek.exception.GitHubApiException;
+import michal.malek.exception.GitHubNoRepositoriesException;
 import michal.malek.exception.GitHubUserNotFoundException;
 import michal.malek.model.dto.GitHubRepoDto;
 import michal.malek.model.message.ErrorMessages;
@@ -13,7 +14,6 @@ import michal.malek.model.response.GitHubRepoResponse;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
-
 @ApplicationScoped
 public class GitHubDataService {
 
@@ -24,12 +24,20 @@ public class GitHubDataService {
     public Uni<List<GitHubRepoResponse>> getNonForkReposWithBranches(String user, String type) {
         return gitHubService.getUserRepos(user, type)
                 .onFailure(WebApplicationException.class)
-                    .transform(ex -> handleApiException((WebApplicationException) ex, user))
+                .transform(ex -> handleApiException((WebApplicationException) ex, user))
                 .onItem().transform(this::filterForks)
-                .onItem().transformToUni(this::fetchBranchesForAll);
+                .onItem().transformToUni(repos -> {
+                    if (repos == null || repos.isEmpty()) {
+                        return Uni.createFrom().failure(new GitHubNoRepositoriesException(user));
+                    }
+                    return fetchBranchesForAll(repos);
+                });
     }
 
     private List<GitHubRepoDto> filterForks(List<GitHubRepoDto> repos) {
+        if (repos == null) {
+            return List.of();
+        }
         return repos.stream().filter(r -> !r.fork).toList();
     }
 
